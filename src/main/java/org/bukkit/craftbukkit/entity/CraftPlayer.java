@@ -1326,4 +1326,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         Preconditions.checkArgument(getGameMode() == GameMode.SPECTATOR, "Player must be in spectator mode");
         getHandle().setSpectatorTarget((entity == null) ? null : ((CraftEntity) entity).getHandle());
     }
+
+    // Spigot start
+    private final Player.Spigot spigot = new Player.Spigot()
+    {
+    };
+
+    public Player.Spigot spigot()
+    {
+        return spigot;
+    }
+    // Spigot end
 }
