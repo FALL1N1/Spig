@@ -1183,7 +1183,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public void setFlySpeed(float value) {
         validateSpeed(value);
         EntityPlayer player = getHandle();
-        player.abilities.flySpeed = value / 2f;
+        player.abilities.flySpeed = Math.max( value, 0.0001f ) / 2f; // Spigot
         player.updateAbilities();
 
     }
@@ -1192,7 +1192,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public void setWalkSpeed(float value) {
         validateSpeed(value);
         EntityPlayer player = getHandle();
-        player.abilities.walkSpeed = value / 2f;
+        player.abilities.walkSpeed = Math.max( value, 0.0001f ) / 2f; // Spigot
         player.updateAbilities();
     }
 
