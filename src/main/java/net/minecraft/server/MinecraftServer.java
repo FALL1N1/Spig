@@ -104,7 +104,7 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
     private long X = 0L;
     private final GameProfileRepository Y;
     private final UserCache Z;
-    protected final Queue<FutureTask<?>> j = Queues.newArrayDeque();
+    protected final Queue<FutureTask<?>> j = new java.util.concurrent.ConcurrentLinkedQueue<FutureTask<?>>(); // Spigot, PAIL: Rename
     private Thread serverThread;
     private long ab = az();
 
@@ -711,11 +711,13 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
         this.methodProfiler.a("jobs");
         Queue queue = this.j;
 
-        synchronized (this.j) {
-            while (!this.j.isEmpty()) {
-                SystemUtils.a((FutureTask) this.j.poll(), MinecraftServer.LOGGER);
-            }
-        }
+        // Spigot start
+        FutureTask<?> entry;
+        int count = this.j.size();
+        while (count-- > 0 && (entry = this.j.poll()) != null) {
+            SystemUtils.a(entry, MinecraftServer.LOGGER);
+         }
+        // Spigot end
 
         this.methodProfiler.c("levels");
 
@@ -1499,10 +1501,10 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
             ListenableFutureTask listenablefuturetask = ListenableFutureTask.create(callable);
             Queue queue = this.j;
 
-            synchronized (this.j) {
-                this.j.add(listenablefuturetask);
-                return listenablefuturetask;
-            }
+            // Spigot start
+            this.j.add(listenablefuturetask);
+            return listenablefuturetask;
+            // Spigot end
         } else {
             try {
                 return Futures.immediateFuture(callable.call());
